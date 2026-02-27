@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:word_guess/model/data_model.dart';
 
@@ -34,18 +36,32 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final TextEditingController controller = TextEditingController();
   late Data currentWord;
+  late int hiddenIndex;
+  late String hiddenLetter;
   bool? result;
 
   @override
   void initState() {
     super.initState();
+    setupWord();
+  }
+
+  void setupWord() {
     currentWord = getRandomWord();
+
+    final word = currentWord.english;
+    hiddenIndex = Random().nextInt(word.length);
+    hiddenLetter = word[hiddenIndex];
+  }
+
+  String get maskedWord {
+    final chars = currentWord.english.split('');
+    chars[hiddenIndex] = '_';
+    return chars.join();
   }
 
   void checkAnswer() {
-    if (controller.text.trim().toLowerCase() ==
-        currentWord.english.toLowerCase()) 
-    {
+    if (controller.text.trim().toLowerCase() == hiddenLetter) {
       setState(() {
         result = true;
       });
@@ -58,7 +74,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void nextWord() {
     setState(() {
-      currentWord = getRandomWord();
+      setupWord();
       controller.clear();
       result = null;
     });
@@ -76,10 +92,14 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: .center,
           children: [
             Image.asset(currentWord.filePath, height: 200),
-            Text(currentWord.english, style: const TextStyle(fontSize: 24)),
+            Text(
+              maskedWord,
+              style: const TextStyle(fontSize: 32, letterSpacing: 8),
+            ),
             TextField(
               controller: controller,
               textAlign: TextAlign.center,
+              maxLength: 1,
               decoration: const InputDecoration(
                 hintText: "พิมพ์คำตอบภาษาอังกฤษ",
                 border: OutlineInputBorder(),
@@ -99,8 +119,19 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ],
             ),
-            Text(result == true ? "ถูกต้อง 🎉" : result == false ? "ผิด ❌" : "", style: const TextStyle(fontSize: 20)),
-            if (result != null && result == false) Text("คำตอบคือ: ${currentWord.english} แปลว่า ${currentWord.thai}", style: const TextStyle(fontSize: 16)),
+            Text(
+              result == true
+                  ? "ถูกต้อง 🎉"
+                  : result == false
+                  ? "ผิด ❌"
+                  : "",
+              style: const TextStyle(fontSize: 20),
+            ),
+            if (result != null && result == false)
+              Text(
+                "คำตอบคือ: ${currentWord.english} แปลว่า ${currentWord.thai}",
+                style: const TextStyle(fontSize: 16),
+              ),
           ],
         ),
       ),
