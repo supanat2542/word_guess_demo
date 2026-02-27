@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:word_guess/model/data_model.dart';
 
 void main() {
@@ -35,6 +36,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final TextEditingController controller = TextEditingController();
+  final FlutterTts tts = FlutterTts();
   late Data currentWord;
   late int hiddenIndex;
   late String hiddenLetter;
@@ -46,12 +48,20 @@ class _MyHomePageState extends State<MyHomePage> {
     setupWord();
   }
 
+  Future speakWord(String word) async {
+  await tts.setLanguage("en-US");
+  await tts.setSpeechRate(0.5);
+  await tts.setPitch(1.0);
+  await tts.speak(word);
+}
+
   void setupWord() {
     currentWord = getRandomWord();
 
     final word = currentWord.english;
     hiddenIndex = Random().nextInt(word.length);
     hiddenLetter = word[hiddenIndex];
+    speakWord(word);
   }
 
   String get maskedWord {
@@ -64,6 +74,7 @@ class _MyHomePageState extends State<MyHomePage> {
     if (controller.text.trim().toLowerCase() == hiddenLetter) {
       setState(() {
         result = true;
+        speakWord(currentWord.english);
       });
     } else {
       setState(() {
