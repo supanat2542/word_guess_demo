@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
           seedColor: const Color.fromARGB(255, 71, 19, 160),
         ),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'ทายคำศัพท์ภาษาอังกฤษจากภาพ'),
     );
   }
 }
@@ -67,6 +67,9 @@ class _MyHomePageState extends State<MyHomePage> {
   String get maskedWord {
     final chars = currentWord.english.split('');
     chars[hiddenIndex] = '_';
+    if (result == true) {
+      chars[hiddenIndex] = hiddenLetter;
+    }
     return chars.join();
   }
 
