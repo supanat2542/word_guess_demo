@@ -87,9 +87,10 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
-      body: Center(
+      body: Container(
+        margin: EdgeInsets.all(16.0),
         child: Column(
-          mainAxisAlignment: .center,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Image.asset(currentWord.filePath, height: 200),
             Text(
@@ -107,7 +108,7 @@ class _MyHomePageState extends State<MyHomePage> {
               onSubmitted: (_) => checkAnswer(),
             ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 ElevatedButton(
                   onPressed: checkAnswer,
@@ -127,11 +128,14 @@ class _MyHomePageState extends State<MyHomePage> {
                   : "",
               style: const TextStyle(fontSize: 20),
             ),
-            if (result != null && result == false)
-              Text(
+            SizedBox(
+              height: 40,
+              child:result != null ?Text(
                 "คำตอบคือ: ${currentWord.english} แปลว่า ${currentWord.thai}",
                 style: const TextStyle(fontSize: 16),
-              ),
+              )
+              : null,
+            ),
           ],
         ),
       ),
